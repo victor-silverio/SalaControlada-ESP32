@@ -1,5 +1,9 @@
 # Sala Controlada - Automação com ESP32
 
+[![Relatório Completo](https://img.shields.io/badge/📖_Ver_Relatório_Completo-blue?style=for-the-badge)](docs/Documentacao_do_projeto.pdf)
+[![Vídeo de Demonstração](https://img.shields.io/badge/▶️_Assistir_Vídeo_no_YouTube-red?style=for-the-badge)](https://www.youtube.com/watch?v=5RqwbafUiyc)
+[![Fluxograma ao Vivo](https://img.shields.io/badge/🔄_Acessar_Fluxograma_ao_Vivo-orange?style=for-the-badge)](https://abre.ai/m5MO)
+
 Este projeto consiste em um sistema de automação residencial inteligente que integra **controle de acesso físico**, **monitoramento ambiental (temperatura e umidade)** e **detecção de presença**. Ele utiliza o microcontrolador ESP32 como unidade central e permite o gerenciamento e visualização local e remota (via Web).
 
 O sistema foi desenvolvido como Projeto Final da disciplina ECAE00 (Introdução à Engenharia e ao Método Científico) no curso de Engenharia de Controle e Automação da **Universidade Federal de Itajubá (UNIFEI)**.
