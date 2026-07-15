@@ -4,6 +4,9 @@
 [![Vídeo de Demonstração](https://img.shields.io/badge/▶️_Assistir_Vídeo_no_YouTube-red?style=for-the-badge)](https://www.youtube.com/watch?v=5RqwbafUiyc)
 [![Fluxograma ao Vivo](https://img.shields.io/badge/🔄_Acessar_Fluxograma_ao_Vivo-orange?style=for-the-badge)](https://abre.ai/m5MO)
 
+> ⚠️ **Aviso sobre o Relatório:** Devido à alta resolução e formatação do PDF, o visualizador do GitHub pode exibir o erro `Invalid PDF`. **Para ler o documento, faça o download clicando no botão "Download raw file" no canto superior direito da página do arquivo.**
+
+
 Este projeto consiste em um sistema de automação residencial inteligente que integra **controle de acesso físico**, **monitoramento ambiental (temperatura e umidade)** e **detecção de presença**. Ele utiliza o microcontrolador ESP32 como unidade central e permite o gerenciamento e visualização local e remota (via Web).
 
 O sistema foi desenvolvido como Projeto Final da disciplina ECAE00 (Introdução à Engenharia e ao Método Científico) no curso de Engenharia de Controle e Automação da **Universidade Federal de Itajubá (UNIFEI)**.
