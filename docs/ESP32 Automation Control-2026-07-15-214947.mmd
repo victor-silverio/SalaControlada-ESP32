@@ -1,0 +1,133 @@
+flowchart TD
+    A[Início] --> B{{Setup: Inicialização do ESP32}}
+    B --> C{{Configuração do ServoMotor}}
+    C --> D{{Inicialização da Comunicação Serial}}
+    D --> E{{Configuração dos Pinos Digitais}}
+    E --> F{{Inicialização de Sensores}}
+    F --> G{{Conexão Wi-Fi}}
+    G -- Sucesso --> H{{Configuração do Servidor Web}}
+    G -- Falha --> G
+    H --> I[Loop Principal]
+    
+    I --> J[Processar Requisições Web]
+    I --> K[Ler Cartão RFID]
+    I --> L[Atualizar Ocupação]
+    I --> M[Atualizar Display Temp/Umid]
+    I --> N[Controle Automático da Ventoinha]
+    I --> O[Verificar Desligamento por Ausência]
+    O --> I
+
+    subgraph "Leitura RFID"
+        direction LR
+        K --> P{{Novo Cartão Presente?}}
+        P -- Não --> K
+        P -- Sim --> Q{{Autorizado?}}
+        Q -- Sim --> R{{Exibir Nome no LCD/Serial}}
+        R --> S{{Tocar Buzzer: Acesso Permitido}}
+        S --> T{{Porta Aberta?}}
+        T -- "Não" --> U{{Abrir Porta - Servo}}
+        U --> V{{Salvar UID do Cartão}}
+        V --> W["Exibir 'Porta: ABERTA'"]
+        W --> X{{Reanexar Servo / Tocar Buzzer}}
+        X --> Y{{Finalizar Comunicação RFID}}
+        Y --> Z{{Atualizar Temporizador}}
+        Z --> K
+
+        T -- "Sim (Mesmo Usuário)" --> AA{{Fechar Porta - Servo}}
+        AA --> BB["Exibir 'Porta: FECHADA'"]
+        BB --> Y
+       
+        T -- "Sim (Outro Usuário)" --> CC["Exibir 'Já aberta por outro'"]
+        CC --> DD{{Tocar Buzzer: Aviso}}
+        DD --> Y
+
+        Q -- Não --> EE["Exibir 'Acesso NEGADO'"]
+        EE --> FF{{Tocar Buzzer: Negado}}
+        FF --> Y
+    end
+
+    subgraph "Atualizar Estado de Ocupação"
+        direction TB
+        L --> GG{{Ler Sensor Ultrassônico}}
+        GG --> HH{{Distância <= Limite?}}
+        HH -- Sim --> II[ocupacao = true]
+        II --> JJ{{Tempo de presença iniciado?}}
+        JJ -- Não --> KK[Iniciar temporizador]
+        JJ -- Sim --> LL{{Tempo decorrido >= 5s?}}
+        LL -- Sim --> MM{{Luz desligada manualmente?}}
+        MM -- Não --> NN[Ligar luz automaticamente]
+        NN --> OO
+        LL -- Não --> OO
+        MM -- Sim --> OO
+
+        HH -- Não --> PP[ocupacao = false]
+        PP --> QQ[Resetar temporizador]
+        QQ --> RR[Resetar flag de luz manual]
+        RR --> OO
+        OO --> L
+    end
+
+    subgraph "Atualizar Display (Temperatura e Umidade)"
+        direction LR
+        M --> SS{{Intervalo de 5s atingido?}}
+        SS -- Não --> M
+        SS -- Sim --> TT{{Atualizar Temporizador}}
+        TT --> UU{{Ler Sensor DHT11}}
+        UU --> VV{{Leitura Válida?}}
+        VV -- Não --> WW["Exibir 'ERRO SENSOR'"]
+        WW --> M
+        VV -- Sim --> XX{{Atualizar temperaturaAtual}}
+        XX --> YY{{Exibir Temp/Umid no LCD}}
+        YY --> M
+    end
+
+    subgraph "Controle Automático da Ventoinha"
+        direction LR
+        N --> ZZ{{Temp >= 27°C E Vent. Desligada?}}
+        ZZ -- Sim --> AAA{{Ligar Ventoinha Automática}}
+        AAA --> BBB[ventilacaoAutomaticaState = true]
+        BBB --> N
+        ZZ -- Não --> CCC{{Temp < 24°C E Vent. Ligada?}}
+        CCC -- Sim --> DDD{{Desligar Ventoinha Automática}}
+        DDD --> EEE[ventilacaoAutomaticaState = false]
+        EEE --> N
+        CCC -- Não --> N
+    end
+
+    subgraph "Verificar Desligamento por Ausência"
+        direction LR
+        O --> FFF{{Sala Vazia e Luz ou Ventoinha Manual Ligada?}}
+        FFF -- Sim --> GGG{{Desligar Luz e Ventoinha Manual}}
+        GGG --> HHH{{Atualizar Estados}}
+        HHH --> III{{Exibir Msg de Desligamento}}
+        III --> O
+        FFF -- Não --> O
+    end
+
+    subgraph "Web: Controle de Luz"
+        direction LR
+        handleLuzOn --> JJJ{{Sala Ocupada?}}
+        JJJ -- Sim --> KKK{{Ligar Luz}}
+        KKK --> LLL[iluminacaoState = true]
+        LLL --> MMM[Resetar flag de luz manual]
+        MMM --> NNN["Msg: 'Luz ligada'"]
+        NNN --> redirectToRoot
+        JJJ -- Não --> OOO["Msg: 'Sala vazia, impossível ligar'"]
+        OOO --> redirectToRoot
+
+        handleLuzOff --> PPP{{Desligar Luz}}
+        PPP --> QQQ[iluminacaoState = false]
+        QQQ --> RRR{{Sala Ocupada?}}
+        RRR -- Sim --> SSS[Ativar flag de luz manual]
+        SSS --> TTT
+        RRR -- Não --> TTT
+        TTT --> UUU["Msg: 'Luz desligada'"]
+        UUU --> redirectToRoot
+    end
+
+    %% --- Rotas Web permanecem iguais ---
+    J -- "Requisição: /" --> handleRoot
+    J -- "Requisição: /luz/on" --> handleLuzOn
+    J -- "Requisição: /luz/off" --> handleLuzOff
+    J -- "Requisição: /ventilacao/on" --> handleVentOn
+    J -- "Requisição: /ventilacao/off" --> handleVentOff
