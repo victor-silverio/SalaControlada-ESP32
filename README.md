@@ -51,8 +51,7 @@ SalaControlada-ESP32/
 │   └── SalaControlada/
 │       └── SalaControlada.ino  # Código fonte principal (Arduino IDE)
 ├── docs/
-│   ├── Documentacao_do_projeto.pdf
-│   ├── Slides - ECAE00 - Sala Controlada.pdf
+│   ├── Documentacao_do_projeto.pdf # Relatório completo do projeto
 │   └── Diagramas de arquitetura (.mmd, .svg)
 ├── README.md                   # Este arquivo
 └── .gitignore                  # Arquivos ignorados pelo Git
@@ -85,10 +84,13 @@ SalaControlada-ESP32/
 
 ## 👨‍💻 Autores
 
+**Desenvolvedor do Código e Relatório:**
+- Victor Augusto de Aquino Silvério (2025016677)
+
+**Outros Membros do Projeto:**
 - Arthur Moraes Marques dos Santos (2025001389)
 - Breno Gabriel Alves de Souza (2025013746)
 - Gustavo Fernandes Gonçalves de Lima (2025002985)
 - Marco Antônio Carneiro Vilela (2025005299)
-- Victor Augusto de Aquino Silvério (2025016677)
 
 *Projeto desenvolvido na **UNIFEI - Universidade Federal de Itajubá** (2025.1).*
